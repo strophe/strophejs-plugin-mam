@@ -1,0 +1,25 @@
+{
+  "name": "strophejs-plugin-mam",
+  "version": "0.0.1",
+  "description": "A Strophe.js plugin for message archive management (XEP-0313)",
+  "main": "strophe.mam.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/strophe/strophejs-plugin-mam.git"
+  },
+  "keywords": [
+    "strophe.js",
+    "strophe",
+    "xmpp",
+    "plugin"
+  ],
+  "author": "The strophe plugin developers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/strophe/strophejs-plugin-mam/issues"
+  },
+  "homepage": "https://github.com/strophe/strophejs-plugin-mam#readme"
+}
