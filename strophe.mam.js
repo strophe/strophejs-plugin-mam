@@ -51,8 +51,12 @@ Strophe.addConnectionPlugin('mam', {
         delete options.onComplete;
         iq.cnode(new Strophe.RSM(options).toXML());
 
-        this._c.addHandler(onMessage, Strophe.NS.MAM, 'message', null);
-        return this._c.sendIQ(iq, onComplete);
+        var _c = this._c;
+        var handler = _c.addHandler(onMessage, Strophe.NS.MAM, 'message', null);
+        return this._c.sendIQ(iq, function(){
+           _c.deleteHandler(handler);
+           onComplete.apply(this, arguments);
+        });
     }
 });
 
