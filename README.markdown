@@ -3,7 +3,7 @@
 strophe.mam.js is a plugin to provide Message Archiving Management
 ( [XEP-0313]( http://xmpp.org/extensions/xep-0313.html ) ).
 
-This plugin requires that the [Strophe.RSM](https://github.com/strophe/strophejs-plugins/blob/master/rsm/strophe.rsm.js)
+This plugin requires that the [Strophe.RSM](https://github.com/strophe/strophejs-plugin-rsm)
 plugin be loaded as well.
 
 ## Usage
