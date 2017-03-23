@@ -23,7 +23,7 @@ Strophe.addConnectionPlugin('mam', {
         var _p = this._p;
         var attr = {
             type:'set',
-            id:jid
+            to:jid
         };
         options = options || {};
         var mamAttr = {xmlns: Strophe.NS.MAM};
