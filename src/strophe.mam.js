@@ -9,8 +9,7 @@
  * http://xmpp.org/extensions/xep-0313.html
  *
  */
-(function(){
-'use strict';
+import { $iq, Strophe } from 'strophe.js';
 
 Strophe.addConnectionPlugin('mam', {
     _c: null,
@@ -59,5 +58,3 @@ Strophe.addConnectionPlugin('mam', {
         });
     }
 });
-
-})();

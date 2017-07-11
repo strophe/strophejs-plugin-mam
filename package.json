@@ -1,9 +1,11 @@
 {
   "name": "strophejs-plugin-mam",
   "version": "0.0.2",
-  "description": "A Strophe.js plugin for message archive management (XEP-0313)",
-  "main": "strophe.mam.js",
+  "description": "A strophe.js plugin for Message Archive Management (XEP-0313)",
+  "main": "lib/strophe.mam.js",
   "scripts": {
+    "build": "rollup src/strophe.mam.js -f umd -g strophe.js:window -e strophejs-plugin-rsm -o lib/strophe.mam.js -m",
+    "prepublish": "npm run --silent build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,5 +23,12 @@
   "bugs": {
     "url": "https://github.com/strophe/strophejs-plugin-mam/issues"
   },
-  "homepage": "https://github.com/strophe/strophejs-plugin-mam#readme"
+  "homepage": "https://github.com/strophe/strophejs-plugin-mam#readme",
+  "devDependencies": {
+    "rollup": "^0.45.0"
+  },
+  "peerDependencies": {
+    "strophe.js": "^1.2.12",
+    "strophejs-plugin-rsm": ">=0.0.1"
+  }
 }

@@ -1,10 +1,13 @@
 # strophe.mam.js
 
-strophe.mam.js is a plugin to provide Message Archiving Management
-( [XEP-0313]( http://xmpp.org/extensions/xep-0313.html ) ).
+Plugin for [strophe.js](https://www.npmjs.com/package/strophe.js) to provide Message Archiving Management ([XEP-0313]( http://xmpp.org/extensions/xep-0313.html)).
 
-This plugin requires that the [Strophe.RSM](https://github.com/strophe/strophejs-plugin-rsm)
-plugin be loaded as well.
+This plugin requires the [Strophe.RSM](https://github.com/strophe/strophejs-plugin-rsm)
+plugin to be loaded as well.
+
+## Install
+
+    npm install strophejs-plugin-mam
 
 ## Usage
 
