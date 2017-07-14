@@ -1,6 +1,6 @@
 {
   "name": "strophejs-plugin-mam",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A strophe.js plugin for Message Archive Management (XEP-0313)",
   "main": "lib/strophe.mam.js",
   "scripts": {
