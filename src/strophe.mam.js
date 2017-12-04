@@ -9,7 +9,7 @@
  * http://xmpp.org/extensions/xep-0313.html
  *
  */
-import { $iq, Strophe } from 'strophe.js';
+//import { $iq, Strophe } from 'strophe.js'; NOTE: Can make issues on some systems
 
 Strophe.addConnectionPlugin('mam', {
     _c: null,
@@ -32,7 +32,11 @@ Strophe.addConnectionPlugin('mam', {
         }
         var iq = $iq(attr).c('query', mamAttr).c('x',{xmlns:'jabber:x:data', type:'submit'});
 
-        iq.c('field',{var:'FORM_TYPE', type:'hidden'}).c('value').t(Strophe.NS.MAM).up().up();
+        var ns = Strophe.NS.MAM;
+        if ( options.oldVersion )
+            ns = 'urn:xmpp:mam:1';
+
+        iq.c('field',{var:'FORM_TYPE', type:'hidden'}).c('value').t(ns).up().up();
         var i;
         for (i = 0; i < this._p.length; i++) {
             var pn = _p[i];
@@ -48,6 +52,8 @@ Strophe.addConnectionPlugin('mam', {
         delete options.onMessage;
         var onComplete = options.onComplete;
         delete options.onComplete;
+        var onError = options.onError;
+        delete options.onError;
         iq.cnode(new Strophe.RSM(options).toXML());
 
         var _c = this._c;
@@ -55,6 +61,6 @@ Strophe.addConnectionPlugin('mam', {
         return this._c.sendIQ(iq, function(){
            _c.deleteHandler(handler);
            onComplete.apply(this, arguments);
-        });
+       },onError);
     }
 });
