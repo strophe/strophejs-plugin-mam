@@ -30,6 +30,8 @@ Strophe.addConnectionPlugin('mam', {
         if (!!options.queryid) {
             mamAttr.queryid = options.queryid;
             delete options.queryid;
+        } else {
+            mamAttr.queryid = _c.getUniqueId();
         }
         var iq = $iq(attr).c('query', mamAttr).c('x',{xmlns:'jabber:x:data', type:'submit'});
 
