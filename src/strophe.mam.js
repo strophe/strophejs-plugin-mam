@@ -27,7 +27,7 @@ Strophe.addConnectionPlugin('mam', {
         };
         options = options || {};
         var mamAttr = {xmlns: Strophe.NS.MAM};
-        if (!!options.queryid) {
+        if (options.queryid) {
             mamAttr.queryid = options.queryid;
             delete options.queryid;
         } else {
@@ -40,7 +40,7 @@ Strophe.addConnectionPlugin('mam', {
             var pn = _p[i];
             var p = options[pn];
             delete options[pn];
-            if (!!p) {
+            if (p) {
                 iq.c('field',{var:pn}).c('value').t(p).up().up();
             }
         }
