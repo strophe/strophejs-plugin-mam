@@ -19,6 +19,7 @@ Strophe.addConnectionPlugin('mam', {
         Strophe.addNamespace('MAM', 'urn:xmpp:mam:2');
     },
     query: function (jid, options) {
+        var _c = this._c;
         var _p = this._p;
         var attr = {
             type:'set',
@@ -33,8 +34,7 @@ Strophe.addConnectionPlugin('mam', {
         var iq = $iq(attr).c('query', mamAttr).c('x',{xmlns:'jabber:x:data', type:'submit'});
 
         iq.c('field',{var:'FORM_TYPE', type:'hidden'}).c('value').t(Strophe.NS.MAM).up().up();
-        var i;
-        for (i = 0; i < this._p.length; i++) {
+        for (var i = 0; i < _p.length; i++) {
             var pn = _p[i];
             var p = options[pn];
             delete options[pn];
@@ -50,9 +50,8 @@ Strophe.addConnectionPlugin('mam', {
         delete options.onComplete;
         iq.cnode(new Strophe.RSM(options).toXML());
 
-        var _c = this._c;
         var handler = _c.addHandler(onMessage, Strophe.NS.MAM, 'message', null);
-        return this._c.sendIQ(iq, function(){
+        return _c.sendIQ(iq, function(){
            _c.deleteHandler(handler);
            onComplete.apply(this, arguments);
         });
