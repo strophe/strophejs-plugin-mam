@@ -26,14 +26,13 @@ Strophe.addConnectionPlugin('mam', {
             to:jid
         };
         options = options || {};
-        var mamAttr = {xmlns: Strophe.NS.MAM};
-        if (options.queryid) {
-            mamAttr.queryid = options.queryid;
+        var queryid = options.queryid;
+        if (queryid) {
             delete options.queryid;
         } else {
-            mamAttr.queryid = _c.getUniqueId();
+            queryid = _c.getUniqueId();
         }
-        var iq = $iq(attr).c('query', mamAttr).c('x',{xmlns:'jabber:x:data', type:'submit'});
+        var iq = $iq(attr).c('query', {xmlns: Strophe.NS.MAM, queryid: queryid}).c('x',{xmlns:'jabber:x:data', type:'submit'});
 
         iq.c('field',{var:'FORM_TYPE', type:'hidden'}).c('value').t(Strophe.NS.MAM).up().up();
         for (var i = 0; i < _p.length; i++) {
