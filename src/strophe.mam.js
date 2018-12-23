@@ -18,6 +18,7 @@ Strophe.addConnectionPlugin('mam', {
     init: function (conn) {
         this._c = conn;
         Strophe.addNamespace('MAM', 'urn:xmpp:mam:2');
+        Strophe.addNamespace('Forward', 'urn:xmpp:forward:0');
     },
     query: function (jid, options) {
         var _c = this._c;
@@ -52,7 +53,26 @@ Strophe.addConnectionPlugin('mam', {
         delete options.onComplete;
         iq.cnode(new Strophe.RSM(options).toXML());
 
-        var handler = _c.addHandler(onMessage, Strophe.NS.MAM, 'message', null);
+        var handler = _c.addHandler(function (message) {
+            // TODO: check the emitter too!
+            var result = message.firstChild;
+            if (!result || result.namespaceURI !== Strophe.NS.MAM || result.localName !== 'result' || result.getAttributeNS(null, 'queryid') !== queryid)
+                return;
+            var id = result.getAttributeNS(null, 'id');
+            var forwarded = result.firstChild;
+            if (!forwarded || forwarded.namespaceURI !== Strophe.NS.Forward || forwarded.localName !== 'forwarded')
+                return;
+            var delay = null;
+            var childMessage = null;
+            for (var child of forwarded.childNodes.values()) {
+                if (child.namespaceURI === 'urn:xmpp:delay' && child.localName === 'delay' && delay === null)
+                    delay = child;
+                else if (child.namespaceURI === 'jabber:client' && child.localName === 'message' && childMessage === null)
+                    childMessage = child;
+            }
+            if (childMessage !== null && delay !== null)
+                onMessage(childMessage, delay, id);
+        }, Strophe.NS.MAM, 'message', null);
         return _c.sendIQ(iq, function(){
            _c.deleteHandler(handler);
            onComplete.apply(this, arguments);
