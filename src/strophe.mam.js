@@ -1,5 +1,6 @@
 /* XEP-0313: Message Archive Management
  * Copyright (C) 2012 Kim Alvefur
+ * Copyright (C) 2018 Emmanuel Gil Peyrot
  *
  * This file is MIT/X11 licensed. Please see the
  * LICENSE.txt file in the source package for more information.
