@@ -57,11 +57,11 @@ Strophe.addConnectionPlugin('mam', {
             // TODO: check the emitter too!
             var result = message.firstChild;
             if (!result || result.namespaceURI !== Strophe.NS.MAM || result.localName !== 'result' || result.getAttributeNS(null, 'queryid') !== queryid)
-                return;
+                return true;
             var id = result.getAttributeNS(null, 'id');
             var forwarded = result.firstChild;
             if (!forwarded || forwarded.namespaceURI !== Strophe.NS.Forward || forwarded.localName !== 'forwarded')
-                return;
+                return true;
             var delay = null;
             var childMessage = null;
             for (var child of forwarded.childNodes.values()) {
@@ -72,6 +72,7 @@ Strophe.addConnectionPlugin('mam', {
             }
             if (childMessage !== null && delay !== null)
                 onMessage(childMessage, delay, id);
+            return true;
         }, Strophe.NS.MAM, 'message', null);
         return _c.sendIQ(iq, function(){
            _c.deleteHandler(handler);
