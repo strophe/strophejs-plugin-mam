@@ -34,24 +34,26 @@ Strophe.addConnectionPlugin('mam', {
         } else {
             queryid = _c.getUniqueId();
         }
-        var iq = $iq(attr).c('query', {xmlns: Strophe.NS.MAM, queryid: queryid}).c('x',{xmlns:'jabber:x:data', type:'submit'});
+        var baseIq = $iq(attr).c('query', {xmlns: Strophe.NS.MAM, queryid: queryid}).c('x',{xmlns:'jabber:x:data', type:'submit'});
 
-        iq.c('field',{var:'FORM_TYPE', type:'hidden'}).c('value').t(Strophe.NS.MAM).up().up();
+        baseIq.c('field',{var:'FORM_TYPE', type:'hidden'}).c('value').t(Strophe.NS.MAM).up().up();
         for (var i = 0; i < _p.length; i++) {
             var pn = _p[i];
             var p = options[pn];
             delete options[pn];
             if (p) {
-                iq.c('field',{var:pn}).c('value').t(p).up().up();
+                baseIq.c('field',{var:pn}).c('value').t(p).up().up();
             }
         }
-        iq.up();
+        baseIq.up();
 
         var onMessage = options.onMessage;
         delete options.onMessage;
         var onComplete = options.onComplete;
         delete options.onComplete;
-        iq.cnode(new Strophe.RSM(options).toXML());
+
+        var iq = Strophe.copyElement(baseIq.tree());
+        iq.firstChild.appendChild(new Strophe.RSM(options).toXML());
 
         var handler = _c.addHandler(function (message) {
             // TODO: check the emitter too!
@@ -74,9 +76,35 @@ Strophe.addConnectionPlugin('mam', {
                 onMessage(childMessage, delay, id);
             return true;
         }, Strophe.NS.MAM, 'message', null);
-        return _c.sendIQ(iq, function(){
-           _c.deleteHandler(handler);
-           onComplete.apply(this, arguments);
-        });
+        function onIq(result_iq){
+            var fin = result_iq.firstChild;
+            if (!fin || fin.namespaceURI !== Strophe.NS.MAM || fin.localName !== 'fin' || fin.getAttributeNS(null, 'queryid') !== queryid) {
+                console.log('Invalid <fin/> result received in iq:', result_iq);
+                return;
+            }
+            var complete = fin.getAttributeNS(null, 'complete');
+            if (complete === 'true') {
+                // This is the last page, cancel the handler and call the user callback.
+                _c.deleteHandler(handler);
+                return onComplete(result_iq);
+            }
+            // This wasn’t the last page, query the one after the last id we received.
+            var set = fin.firstChild;
+            if (!set || set.namespaceURI !== Strophe.NS.RSM || set.localName !== 'set') {
+                console.log('Invalid <set/> result received in iq:', result_iq);
+                return;
+            }
+            // TODO: is there really nothing better than this to get a direct child in DOM?
+            var last = fin.getElementsByTagNameNS(Strophe.NS.RSM, 'last');
+            if (!last) {
+                console.log('No <last/> in <set/>:', result_iq);
+                return;
+            }
+            options.after = last[0].textContent;
+            var iq = Strophe.copyElement(baseIq.tree());
+            iq.firstChild.appendChild(new Strophe.RSM(options).toXML());
+            _c.sendIQ(iq, onIq);
+        }
+        return _c.sendIQ(iq, onIq);
     }
 });
