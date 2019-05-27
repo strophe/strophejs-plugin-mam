@@ -55,6 +55,10 @@ Strophe.addConnectionPlugin('mam', {
         return this._c.sendIQ(iq, function(){
            _c.deleteHandler(handler);
            onComplete.apply(this, arguments);
-        });
+        },
+            function(err){
+                //error callBack function 
+                console.log("Error Response from server:", err);
+            });
     }
 });
